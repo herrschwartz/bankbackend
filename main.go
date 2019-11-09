@@ -25,7 +25,7 @@ type indexData struct {
 	Items []Item
 }
 
-func urlHandler(w http.ResponseWriter, req *http.Request) {
+func indexHandler(w http.ResponseWriter, req *http.Request) {
 	if req.Method == "GET" {
 		testdata := indexData{
 			Guild: "Its ok to be Whitemane",
@@ -39,7 +39,6 @@ func urlHandler(w http.ResponseWriter, req *http.Request) {
 				{Id: 16223, Amt: 1},
 			},
 		}
-
 		tpl.ExecuteTemplate(w, "index.html", testdata)
 	}
 }
@@ -63,9 +62,9 @@ func main() {
 
 	tpl = template.Must(template.ParseFiles("templates/index.html"))
 
-	http.HandleFunc("/", urlHandler)
+	http.HandleFunc("/", indexHandler)
 
-	log.Info("Starting URL shortener on localhost:8080")
+	log.Info("Starting App on localhost:8080")
 	err = http.ListenAndServe("localhost:8080", nil)
 	if err != nil {
 		log.Crit("Unable to start web server", "error", err)

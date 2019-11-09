@@ -9,12 +9,15 @@
 <body>
     <h1>{{.Guild}}</h1>
     {{with .Items}}
-    {{range . }}
+        {{range . }}
         <div>
             <a href="https://classic.wowhead.com/item={{.Id}}" class="q0"></a>
+            {{if (gt .Amt 1)}}
             <span class="amt">x{{.Amt}}</span>
+            {{else}}
+            {{end}}
         </div>
-    {{ end }}
+        {{ end }}
     {{ end }}
 </body>
 </html>
