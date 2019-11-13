@@ -27,17 +27,26 @@ type indexData struct {
 
 func indexHandler(w http.ResponseWriter, req *http.Request) {
 	if req.Method == "GET" {
+		rows, err := db.Query(context.Background(), "SELECT item_id, quantity FROM items WHERE guild_id=$1", 1)
+		if err != nil {
+			log.Crit("Unable to complete query", "error", err)
+		}
+		defer rows.Close()
+
+		var items []Item
+		for rows.Next() {
+			var itemID int
+			var amount int
+			err = rows.Scan(&itemID, &amount)
+			if err != nil {
+				log.Error("unable to scan row", "error", err)
+			}
+			items = append(items, Item{Id: itemID, Amt: amount})
+		}
+
 		testdata := indexData{
 			Guild: "Its ok to be Whitemane",
-			Items: []Item{
-				{Id: 5113, Amt: 1},
-				{Id: 16204, Amt: 20},
-				{Id: 16393, Amt: 1},
-				{Id: 19019, Amt: 1},
-				{Id: 14551, Amt: 1},
-				{Id: 14552, Amt: 1},
-				{Id: 16223, Amt: 1},
-			},
+			Items: items,
 		}
 		tpl.ExecuteTemplate(w, "index.html", testdata)
 	}
